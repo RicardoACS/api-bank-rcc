@@ -58,7 +58,6 @@ export const sendEmailCreateUser = (user:any, email:any) => {
 export const sendEmailNewTransferClient = (user:any, email:any, date:any, destination:any, message:any, accountNumber:any, ammount:any, accountNumberDestination:any) => {
     readHTMLFile(__dirname + '/email/new_transfer_client.html', function (err: any, html: any) {
         var template = handlebars.compile(html);
-        console.log(dateFormat(date, "dd-mm-yyyy h:MM"))
         var replacements = {
             username: user,
             date: dateFormat(date, "dd-mm-yyyy h:MM"),
@@ -89,7 +88,6 @@ export const sendEmailNewTransferClient = (user:any, email:any, date:any, destin
 export const sendEmailNewTransferDestination = (user:any, email:any, ammount:any, date:any) => {
     readHTMLFile(__dirname + '/email/new_transfer_client.html', function (err: any, html: any) {
         var template = handlebars.compile(html);
-        console.log(dateFormat(date, "dd-mm-yyyy h:MM"))
         var replacements = {
             username: user,
             date: dateFormat(date, "dd-mm-yyyy h:MM"),

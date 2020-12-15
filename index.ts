@@ -37,4 +37,4 @@ router.get('/v1/destinations/:id', getDestinationByAccountId)
 
 app.use(router)
 
-app.listen(5000, () => console.log('Servidor funcionando en el puerto 5000'))
+app.listen(process.env.PORT, () => console.log('Servidor funcionando en el puerto ${process.env.PORT}'))
