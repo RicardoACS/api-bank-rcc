@@ -1,3 +1,4 @@
+import { sendEmailNewTransferClient, sendEmailNewTransferDestination } from './emailController';
 import { Request as Req, Response as Res } from 'express'
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
@@ -63,6 +64,7 @@ export const createTransaction = async (req: Req, res: Res) => {
 export const createTransferThirdParties = async (req: Req, res: Res) => {
     try {
         console.log("[Controller] Se creará una transferencia a tercero");
+        let dateCreation = new Date;
         var {
             ammount,
             transaction_type_id,
@@ -82,7 +84,7 @@ export const createTransferThirdParties = async (req: Req, res: Res) => {
                     }
                 },
                 ammount,
-                created: new Date,
+                created: dateCreation,
                 description,
                 transactions_type: {
                     connect: {
@@ -94,12 +96,30 @@ export const createTransferThirdParties = async (req: Req, res: Res) => {
                         destination_id
                     }
                 }
+            },
+            select: {
+                destination: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
             }
         })
 
         if (transaction != null) {
             //Se actualiza la cuenta del usuario
             const myAccount = await prisma.account.findFirst({
+                select: {
+                    account_id: true,
+                    number: true,
+                    ammount: true,
+                    user: {
+                        select: {
+                            email: true
+                        }
+                    }
+                },
                 where: {
                     account_id
                 }
@@ -122,7 +142,7 @@ export const createTransferThirdParties = async (req: Req, res: Res) => {
                 }
             })
 
-            const transaction = await prisma.transactions.create({
+            const transactionThird = await prisma.transactions.create({
                 data: {
                     account: {
                         connect: {
@@ -130,7 +150,7 @@ export const createTransferThirdParties = async (req: Req, res: Res) => {
                         }
                     },
                     ammount,
-                    created: new Date,
+                    created: dateCreation,
                     description: "Transferencia de " + name_origen,
                     transactions_type: {
                         connect: {
@@ -148,9 +168,10 @@ export const createTransferThirdParties = async (req: Req, res: Res) => {
                     account_id: accountDestination?.account_id
                 }
             })
-
+            sendEmailNewTransferClient(name_origen, myAccount?.user.email, dateCreation, transaction.destination?.name, description, myAccount?.number , ammount, accountDestination?.number );
+            sendEmailNewTransferDestination(name_origen, transaction.destination?.email, ammount, dateCreation );
         }
-
+        
         prisma.$disconnect()
         res.status(200).json({ data: [] })
     } catch (error) {
@@ -192,10 +213,10 @@ export const getLastMovements = async (req: Req, res: Res) => {
             }
         })
         prisma.$disconnect()
-        res.status(200).json(result)
+        return res.status(200).json(result)
     } catch (error) {
         console.error("Ha ocurrido un error al consultar los últimos movimientos: ", error);
         var messageError = "Ha ocurrido un error al consultar los últimos movimientos, intente más tarde";
-        res.status(500).json({ data: [], error: messageError });
+        return res.status(500).json({ data: [], error: messageError });
     }
 }

@@ -1,3 +1,4 @@
+import { sendEmailCreateUser } from './emailController';
 import { Request as Req, Response as Res } from 'express'
 import { PrismaClient } from "@prisma/client"
 const bcrypt = require('bcrypt');
@@ -8,8 +9,7 @@ export const createUser = async (req: Req, res: Res) => {
         console.log("[Controller] Se creará un usuario");
         const { rut, name, email, password } = req.body;
 
-        const hash = await bcrypt.hash(password, 10)
-
+    
         //Buscará si existe el usuario en la DB
         const searchUser = await prisma.user.findFirst({
             where: { rut: rut }
@@ -19,12 +19,13 @@ export const createUser = async (req: Req, res: Res) => {
             res.status(409).json({ data: [], error: "Usuario ya se encuentra en el sistema" })
         }
 
+        const hash = await bcrypt.hash(password, 10)
         //Creará el usuario, ya que no está creado.
         const createdUser = await prisma.user.create({
             data: {
                 email,
                 name,
-                password,
+                password: hash,
                 rut,
                 created: new Date
             }
@@ -58,6 +59,7 @@ export const createUser = async (req: Req, res: Res) => {
             }
         })
 
+        sendEmailCreateUser(user?.name, user?.email);
         prisma.$disconnect()
         res.status(200).json(user)
     } catch (error) {
@@ -71,7 +73,6 @@ export const getUserByRut = async (req: Req, res: Res) => {
     try {
         console.log("[Controller] Se buscará un usuario por RUT");
         var { rut } = req.params;
-        console.log(rut);
 
         const result = await prisma.user.findFirst({
             where: {
@@ -101,17 +102,9 @@ export const login = async (req: Req, res: Res) => {
         console.log("[Controller] Se Logeará un usuario");
         var { rut, password } = req.body;
 
-        console.log(rut, password)
-
-        const hash = await bcrypt.hash(password, 10)
-
-        const compare = await bcrypt.compare(password, hash);
-        console.log(compare);
-
-        const login = await prisma.user.findFirst({
+        const loginUser = await prisma.user.findFirst({
             where: {
-                rut: rut,
-                password: password
+                rut: rut
             },
             select: {
                 user_id: true,
@@ -120,20 +113,26 @@ export const login = async (req: Req, res: Res) => {
                 name: true,
                 account: true,
                 rut: true,
-                password: false
+                password: true
             }
         })
 
-        if (login == null) {
-            res.status(404).json({ data: [], error: "Credenciales invalidas" })
+        if (loginUser == null) {
+            return res.status(404).json({ data: [], error: "Credenciales invalidas" })
+        }
+
+        const compare = await bcrypt.compare(password, loginUser?.password);
+
+        if(!compare) {
+            return res.status(404).json({ data: [], error: "Credenciales invalidas" })
         }
 
         prisma.$disconnect()
-        res.status(200).json(login)
+        return res.status(200).json(loginUser)
     } catch (error) {
         console.error("Ha ocurrido un error al ingresar al sistema: ", error);
         var messageError = "Ha ocurrido un error al sistema, intente más tarde";
-        res.status(500).json({ data: [], error: messageError });
+        return res.status(500).json({ data: [], error: messageError });
     }
 }
 

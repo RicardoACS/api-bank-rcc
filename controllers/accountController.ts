@@ -9,15 +9,15 @@ export const getAccountById = async (req: Req, res: Res) => {
 
         const result = await prisma.account.findFirst({
             where: {
-                account_id: Number(id)
+                user_id: Number(id)
             }
         })
 
         prisma.$disconnect()
-        res.status(200).json(result)
+        return res.status(200).json(result)
     } catch (error) {
         console.error("Ha ocurrido un error al obtener la cuenta: ", error);
         var messageError = "Ha ocurrido un error al obtener la cuenta, intente más tarde";
-        res.status(500).json({ data: [], error: messageError });
+        return res.status(500).json({ data: [], error: messageError });
     }
 }

@@ -8,10 +8,10 @@ export const getAllBanks = async (req: Req, res: Res) => {
         const bank = await prisma.bank.findMany()
     
         prisma.$disconnect()
-        res.status(200).json(bank)
+        return res.status(200).json(bank)
     } catch (error) {
         console.error("Ha ocurrido un error al obtener los bancos: ", error);
         var messageError = "Ha ocurrido un error al obtener los bancos, intente más tarde";
-        res.status(500).json({data: [], error: messageError});
+        return res.status(500).json({data: [], error: messageError});
     }
 }

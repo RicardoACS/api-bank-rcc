@@ -29,11 +29,11 @@ export const getDestinationByAccountId = async (req: Req, res: Res) => {
         })
 
         prisma.$disconnect()
-        res.status(200).json(resport)
+        return res.status(200).json(resport)
     } catch (error) {
         console.error("Ha ocurrido un error al obtener los destinatarios: ", error);
         var messageError = "Ha ocurrido un error al obtener los destinatarios, intente más tarde";
-        res.status(500).json({ data: [], error: messageError });
+        return res.status(500).json({ data: [], error: messageError });
     }
 };
 
@@ -58,7 +58,20 @@ export const createDestination = async (req: Req, res: Res) => {
         });
 
         if (validate == null) {
-            res.status(500).json({ data: [], error: "Cuenta no existe en nuestros sistemas" });
+            return res.status(500).json({ data: [], error: "Cuenta no existe en nuestros sistemas" });
+        }
+
+        const ifExist = await prisma.destination.findFirst({
+            where: {
+                account_number: Number(account_number).toString(),
+                AND: {
+                    account_id: Number(account_id)
+                }
+            }
+        })
+
+        if (ifExist != null) {
+            return res.status(409).json({ data: [], error: "Cuenta ya está registrada" });
         }
 
         await prisma.destination.create({
@@ -82,11 +95,11 @@ export const createDestination = async (req: Req, res: Res) => {
         })
 
         prisma.$disconnect()
-        res.status(200).json({ data: [] })
+        return res.status(200).json({ data: [] })
     } catch (error) {
         console.error("Ha ocurrido un error al obtener los destinatarios: ", error);
         var messageError = "Ha ocurrido un error al obtener los destinatarios, intente más tarde";
-        res.status(500).json({ data: [], error: messageError });
+        return res.status(500).json({ data: [], error: messageError });
     }
 };
 
