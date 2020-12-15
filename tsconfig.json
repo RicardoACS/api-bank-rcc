@@ -1,10 +1,12 @@
 {
-    "compilerOptions": {
-      "sourceMap": true,
-      "outDir": "dist",
-      "strict": true,
-      "lib": ["esnext"],
-      "esModuleInterop": true,
-      "strictPropertyInitialization": false
-    }
-  }
+	"compilerOptions": {
+		"outDir": "build",
+		"target": "es3",
+		"sourceMap": false,
+		"module": "commonjs",
+		"moduleResolution": "node"
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

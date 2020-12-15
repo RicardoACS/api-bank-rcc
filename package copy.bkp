@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node build/start.js",
-    "clean": "rm -rf build node_modules"
+    "start": "ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ricardo Carrasco Soto",
   "license": "ISC",
