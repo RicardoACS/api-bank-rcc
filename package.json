@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "prisma:generate": "prisma generate",
+    "prisma:introspect": "prisma introspect",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
