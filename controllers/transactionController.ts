@@ -210,6 +210,9 @@ export const getLastMovements = async (req: Req, res: Res) => {
                 account: {
                     user_id: Number(id)
                 }
+            },
+            orderBy: {
+                created: "asc"
             }
         })
         prisma.$disconnect()

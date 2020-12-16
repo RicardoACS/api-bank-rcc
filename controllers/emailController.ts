@@ -59,7 +59,7 @@ export const sendEmailNewTransferClient = (user:any, email:any, date:any, destin
         var template = handlebars.compile(html);
         var replacements = {
             username: user,
-            date: dateFormat(date, "dd-mm-yyyy h:MM"),
+            date: dateFormat(date, "dd-mm-yyyy"),
             destination,
             message,
             accountNumber,
@@ -89,7 +89,7 @@ export const sendEmailNewTransferDestination = (user:any, email:any, ammount:any
         var template = handlebars.compile(html);
         var replacements = {
             username: user,
-            date: dateFormat(date, "dd-mm-yyyy h:MM"),
+            date: dateFormat(date, "dd-mm-yyyy"),
             ammount,
         };
         var htmlToSend = template(replacements);
