@@ -9,8 +9,7 @@ dotenv.config();
 function readHTMLFile(path: any, callback: any) {
     fs.readFile(path, { encoding: 'utf-8' }, function (err: any, html: any) {
         if (err) {
-            throw err;
-            callback(err);
+            console.error("Ha ocurrido un error al leer el correo", err)
         }
         else {
             callback(null, html);
