@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "prisma generate",
+    "start": "prisma generate && prisma introspect  && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ricardo Carrasco Soto",
