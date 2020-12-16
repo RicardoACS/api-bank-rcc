@@ -1,3 +1,0 @@
-generate:
-  - generator: graphql-schema
-    output: ./generated/prisma.graphql
