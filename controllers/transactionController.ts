@@ -212,7 +212,7 @@ export const getLastMovements = async (req: Req, res: Res) => {
                 }
             },
             orderBy: {
-                created: "asc"
+                created: "desc"
             }
         })
         prisma.$disconnect()
