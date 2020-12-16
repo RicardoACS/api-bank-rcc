@@ -86,7 +86,7 @@ export const sendEmailNewTransferClient = (user:any, email:any, date:any, destin
 }
 
 export const sendEmailNewTransferDestination = (user:any, email:any, ammount:any, date:any) => {
-    readHTMLFile(__dirname + '/email/new_transfer_client.html', function (err: any, html: any) {
+    readHTMLFile(__dirname + '/email/new_transfer_destination.html', function (err: any, html: any) {
         var template = handlebars.compile(html);
         var replacements = {
             username: user,
