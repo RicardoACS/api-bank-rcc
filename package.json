@@ -1,13 +1,11 @@
 {
-  "name": "app-bank-api-v2",
+  "name": "app-bank-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "prisma:generate": "prisma generate",
-    "prisma:introspect": "prisma introspect",
     "build": "tsc",
-    "start": "prisma generate && prisma introspect  && node dist/index.js",
+    "start": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ricardo Carrasco Soto",
